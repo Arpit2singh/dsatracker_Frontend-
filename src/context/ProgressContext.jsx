@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { QUESTIONS } from '../data/questions';
 import { todayStr } from '../utils/dateHelpers';
@@ -47,7 +47,7 @@ export function ProgressProvider({ children }) {
         setDueReviews(Array.isArray(data?.items) ? data.items : []);
     }
 
-    async function refreshProgress() {
+    const refreshProgress = useCallback(async () => {
         setIsLoading(true);
         setError('');
         try {
@@ -57,11 +57,11 @@ export function ProgressProvider({ children }) {
         } finally {
             setIsLoading(false);
         }
-    }
+    }, []);
 
     useEffect(() => {
         refreshProgress();
-    }, []);
+    }, [refreshProgress]);
 
     async function markDone(questionId) {
         setIsMutating(true);
